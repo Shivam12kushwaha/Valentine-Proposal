@@ -1,1 +1,95 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Be My Valentine?</title>
+    <style>
+        body {
+            margin: 0; padding: 0; height: 100vh; overflow: hidden;
+            background: linear-gradient(45deg, #ff6b9d, #c44569, #feca57);
+            font-family: 'Arial', sans-serif;
+            display: flex; justify-content: center; align-items: center;
+            position: relative;
+        }
+        canvas { position: absolute; top: 0; left: 0; z-index: 1; }
+        .content { z-index: 2; text-align: center; color: white; }
+        h1 { font-size: 2.5em; margin: 0; text-shadow: 0 0 20px rgba(255,255,255,0.8); animation: pulse 2s infinite; }
+        @keyframes pulse { 0%, 100% { transform: scale(1); } 50% { transform: scale(1.05); } }
+        .buttons { margin-top: 30px; }
+        button { padding: 15px 30px; margin: 10px; font-size: 1.2em; border: none; border-radius: 50px; cursor: pointer; transition: all 0.3s; }
+        #yes { background: linear-gradient(45deg, #ff6b9d, #ff8e8e); color: white; box-shadow: 0 5px 15px rgba(255,107,157,0.4); }
+        #yes:hover { transform: scale(1.1); }
+        #no { background: #ccc; color: #666; position: relative; }
+        #no:hover { transform: translate(calc(50vw * (Math.random() - 0.5), calc(50vh * (Math.random() - 0.5)))!important; }
+        .celebration { display: none; font-size: 3em; animation: bounce 1s infinite; }
+        @keyframes bounce { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-20px); } }
+        @media (max-width: 600px) { h1 { font-size: 1.8em; } }
+    </style>
+</head>
+<body>
+    <canvas id="hearts"></canvas>
+    <div class="content" id="proposal">
+        <h1>[Her Name], Will You Be My Valentine? 💖</h1>
+        <div class="buttons">
+            <button id="yes">Yes ❤️</button>
+            <button id="no">No 😏</button>
+        </div>
+    </div>
+    <div class="celebration" id="celebrate">I Knew It! You're Mine Forever! 💕💃</div>
+
+    <script>
+        // Floating hearts background
+        const canvas = document.getElementById('hearts');
+        const ctx = canvas.getContext('2d');
+        canvas.width = window.innerWidth;
+        canvas.height = window.innerHeight;
+        const hearts = [];
+        for (let i = 0; i < 50; i++) {
+            hearts.push({
+                x: Math.random() * canvas.width,
+                y: Math.random() * canvas.height,
+                size: Math.random() * 20 + 10,
+                speed: Math.random() * 2 + 0.5,
+                opacity: Math.random() * 0.5 + 0.5
+            });
+        }
+        function animateHearts() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            hearts.forEach(heart => {
+                ctx.save();
+                ctx.globalAlpha = heart.opacity;
+                ctx.font = `${heart.size}px Arial`;
+                ctx.fillText('❤️', heart.x, heart.y);
+                heart.y -= heart.speed;
+                if (heart.y < 0) heart.y = canvas.height;
+                ctx.restore();
+            });
+            requestAnimationFrame(animateHearts);
+        }
+        animateHearts();
+
+        // No button dodge (playful, can't click)
+        const noBtn = document.getElementById('no');
+        noBtn.addEventListener('mouseover', () => {
+            const maxX = window.innerWidth - 100;
+            const maxY = window.innerHeight - 100;
+            noBtn.style.transform = `translate(${Math.random() * maxX - 50}px, ${Math.random() * maxY - 50}px)`;
+        });
+
+        // Yes celebration
+        document.getElementById('yes').addEventListener('click', () => {
+            document.getElementById('proposal').style.display = 'none';
+            document.getElementById('celebrate').style.display = 'block';
+            // Simple confetti (add more hearts speed)
+            hearts.forEach(h => h.speed *= 2);
+        });
+
+        window.addEventListener('resize', () => {
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+        });
+    </script>
+</body>
+</html>
 
